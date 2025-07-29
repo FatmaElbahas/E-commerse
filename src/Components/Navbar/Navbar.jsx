@@ -39,7 +39,7 @@ export default function Navbar({ cartInfo, wishlistInfo }) {
   return (
     <header className="bg-white shadow sticky top-0 z-50">
       {/* Nav2 */}
-      <div className="nav2 mt-3 flex justify-between items-center px-4 mt-5">
+      <div className="nav2 mt-3 flex justify-between items-center px-4 mt-20">
         <div className="logo flex items-center gap-2">
           <img src={logo} alt="logo" className="w-[30px]" />
           <h2 className="text-2xl font-bold">Fresh Cart</h2>
