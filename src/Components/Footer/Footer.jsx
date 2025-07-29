@@ -3,7 +3,8 @@ import logo from "../../assets/imgs/mini-logo.png"
 export default function Footer() {
   return (
 <>
-<footer>
+<div className="container">
+  <footer>
           <div className=" border-t border border-gray-300  mt-2 mb-10 "></div>
 
   <div className="container">
@@ -76,6 +77,7 @@ export default function Footer() {
   </div>            
   </div>
 </footer>
+</div>
 </>  
 )
 }
