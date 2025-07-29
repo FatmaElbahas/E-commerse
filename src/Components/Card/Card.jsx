@@ -18,7 +18,9 @@ export default function Card({ productInfo }) {
     <div className="cart p-4 space-y-4 shadow-xl rounded-md group">
       <div className="image relative">
         <img src={imageCover} alt={title} />
-        <div className="overlay opacity-0 absolute inset-0 bg-gray-500/40 flex justify-center items-center space-x-2 group-hover:opacity-100 transition-colors ">
+        {/* ✅ overlay يظهر دايمًا في الموبايل وبالهوفر على الديسكتوب */}
+        <div className="overlay absolute inset-0 bg-gray-500/40 flex justify-center items-center space-x-2 
+          opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
           
           {/* 👁 View Product */}
           <div className="bg-primary-500 cursor-pointer hover:text-primary-500 hover:bg-white size-8 p-1 text-white rounded-full flex items-center justify-center">
