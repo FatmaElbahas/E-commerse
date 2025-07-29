@@ -9,62 +9,125 @@ import * as yup from "yup";
 import axios from 'axios'
 import { toast } from 'react-toastify'
 export default function Signup() {
-  const emailRegex=/[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
-  const passwordRegex=/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/;
-  const phoneRegex=/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/
-  const[isExistEmail,setIsExist]=useState(null);
-  const validationSchema= yup.object(
-    {
-      name:yup.string() .required("name is required"),
-      email:yup.string().required("email is required").email().matches(emailRegex,"invalid Email"),
-      password:yup.string().required("passwords is required").matches(passwordRegex,"Minimum eight characters, at least one upper case English letter, one lower case English letter, one number and one special character"),
-      rePassword: yup
-     .string()
-     .required("Please confirm your password")
-     .oneOf([yup.ref("password")], "Passwords must match"),
-      phone:yup.string().required("phone is required").matches(phoneRegex),
-      terms:yup.boolean().oneOf([true],"You Must agree to Our Terms and Conditions"),
-    }
-  )
-  let navigate=useNavigate()
-async function handleSubmit(values){
-  try {
-    const options = {
-      method: "POST",
-      url: "https://ecommerce.routemisr.com/api/v1/auth/signup",
-      data: {
-        name: values.name,
-        email: values.email,
-        password: values.password,
-        rePassword: values.rePassword,
-        phone: values.phone,
-      }
+  const [password, setPassword] = useState("");
+   const [strength, setStrength] = useState({
+    label: "Weak",
+    width: "w-1/4",
+    color: "bg-red-500",
+  });
+  const navigate = useNavigate();
+
+ const handlePasswordChange = (e) => {
+  const value = e.target.value;
+  setPassword(value);
+  formik.setFieldValue("password", value);
+  
+  let strengthValue = {
+    label: "Weak",
+    width: "w-1/4",
+    color: "bg-red-500",
+  };
+
+  if (
+    value.length > 8 &&
+    /[A-Z]/.test(value) &&
+    /[0-9]/.test(value) &&
+    /[^A-Za-z0-9]/.test(value)
+  ) {
+    strengthValue = {
+      label: "Strong",
+      width: "w-full",
+      color: "bg-green-500",
     };
-
-    const {data} = await axios.request(options);
-    console.log(data);
-    if(data.message==="success"){
-          toast.success("Your Account has been created");
-        setTimeout(()=>{navigate("/login")},3000
-  )
-}
-  } catch (error) {
-    setIsExist(error.response.data.message);
+  } else if (
+    value.length >= 6 &&
+    /[A-Z]/.test(value) &&
+    /[0-9]/.test(value)
+  ) {
+    strengthValue = {
+      label: "Medium",
+      width: "w-1/2",
+      color: "bg-yellow-500",
+    };
   }
-}
-  const formik=useFormik({
-    initialValues:{
-    name: "",
-    email:"",
-    password:"",
-    rePassword:"",
-    phone:"",
-    terms:false,
-    },
-    validationSchema:validationSchema,
-    onSubmit:handleSubmit,
 
-  })
+  setStrength(strengthValue);
+};
+
+  const emailRegex = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
+  const passwordRegex =
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/;
+  const phoneRegex =
+    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+
+  const [isExistEmail, setIsExist] = useState(null);
+
+  const validationSchema = yup.object({
+    name: yup.string().required("name is required"),
+    email: yup
+      .string()
+      .required("email is required")
+      .email()
+      .matches(emailRegex, "invalid Email"),
+    password: yup
+      .string()
+      .required("password is required")
+      .matches(
+        passwordRegex,
+        "Minimum 8 characters, one uppercase, one lowercase, one number, one special char"
+      ),
+    rePassword: yup
+      .string()
+      .required("Please confirm your password")
+      .oneOf([yup.ref("password")], "Passwords must match"),
+    phone: yup
+      .string()
+      .required("phone is required")
+      .matches(phoneRegex, "Invalid phone number"),
+    terms: yup
+      .boolean()
+      .oneOf([true], "You must agree to the terms and conditions"),
+  });
+
+  async function handleSubmit(values) {
+    try {
+      const options = {
+        method: "POST",
+        url: "https://ecommerce.routemisr.com/api/v1/auth/signup",
+        data: {
+          name: values.name,
+          email: values.email,
+          password: values.password,
+          rePassword: values.rePassword,
+          phone: values.phone,
+        },
+      };
+
+      const { data } = await axios.request(options);
+      if (data.message === "success") {
+        toast.success("Your Account has been created");
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
+      }
+    } catch (error) {
+      setIsExist(error.response.data.message);
+    }
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      password: "",
+      rePassword: "",
+      phone: "",
+      terms: false,
+    },
+    validationSchema: validationSchema,
+    onSubmit: handleSubmit,
+  });
+
   return (
 <>
 <main className='py-12'>
@@ -170,23 +233,34 @@ onBlur={formik.handleBlur}
 }
 
       </div>
-      <div className="password flex flex-col gap-1">
-<label htmlFor="password">Password*</label>
-<input type="password" placeholder='Create aStrong Password' id='password' className='form-control' 
- name='password'
-value={formik.values.password}
-onChange={formik.handleChange}
-onBlur={formik.handleBlur}
-/>
-{formik.touched.password&&formik.errors.password&& <p className='text-red-500'>{formik.errors.password}</p>}
+      
+ <div className="password flex flex-col gap-1">
+  <label htmlFor="password">Password*</label>
 
-<div className="password-strength flex items-center">
-  <div className="bar bg-gray-300 h-1 w-full">
-    <div className="progress bg-red-500 w-1/4 h-full"></div>
+  <input
+    type="password"
+    id="password"
+    name="password"
+    placeholder="Create a Strong Password"
+    className="form-control"
+    value={formik.values.password}
+    onChange={handlePasswordChange}
+    onBlur={formik.handleBlur}
+  />
+
+  {formik.touched.password && formik.errors.password && (
+    <p className="text-red-500">{formik.errors.password}</p>
+  )}
+
+  <div className="password-strength flex items-center gap-2 mt-1">
+    <div className="bar bg-gray-300 h-1 w-full relative">
+      <div
+        className={`progress h-full absolute top-0 left-0 ${strength.color} ${strength.width}`}
+      ></div>
+    </div>
+    <span className="text-sm font-semibold capitalize">{strength.label}</span>
   </div>
-  <span>Week</span>
 </div>
-      </div>
       <div className="repassword flex flex-col gap-1">
 <label htmlFor="repassword">Confirm Password*</label>
 <input type="password" placeholder='Confirm Your password' id='repassword' className='form-control'
