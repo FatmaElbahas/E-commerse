@@ -8,9 +8,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { TokenContext } from '../../Context/TokenContext';
 import { useContext, useState } from "react";
+import { CartContext } from '../../Context/CartContext';
+import { wishlistContext } from '../../Context/WishListContext';
 
-export default function Navbar({ cartInfo, wishlistInfo }) {
+export default function Navbar({   }) {
   const { Logout } = useContext(TokenContext); // جايباه من الـ context بس
+  const { cartInfo } = useContext(CartContext); // جايباه من الـ context بس
+  const { wishlistInfo } = useContext(wishlistContext); // جايباه من الـ context بس
   const [navOpen, setNavOpen] = useState(false);
   const [nav3open, setNav3open] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -37,9 +41,9 @@ export default function Navbar({ cartInfo, wishlistInfo }) {
   };
 
   return (
-    <header className="bg-white shadow sticky top-0 z-50">
+    <header className="bg-white shadow sticky top-0 z-50 ">
       {/* Nav2 */}
-      <div className="nav2 mt-3 flex justify-between items-center px-4 mt-20">
+      <div className="nav2 mt-3 flex justify-between items-center px-4 py-4">
         <div className="logo flex items-center gap-2">
           <img src={logo} alt="logo" className="w-[30px]" />
           <h2 className="text-2xl font-bold">Fresh Cart</h2>
@@ -55,9 +59,9 @@ export default function Navbar({ cartInfo, wishlistInfo }) {
             <>
               <li className='flex flex-col items-center justify-center relative'>
                 <NavLink to="WishList" className={({ isActive }) => `flex flex-col items-center justify-center relative ${isActive ? "text-primary-600" : ""}`}>
-                  <i className="fa-regular fa-heart"></i>
+                  <i className="fa-regular fa-heart text-2xl"></i>
                   <p>WishList</p>
-                  <span className='absolute top-[-15px] right-1.5 bg-primary-700 text-white rounded-full min-w-[18px] h-[18px] text-xs px-1 flex items-center justify-center'>
+                  <span className='absolute top-[-5px] right-1.5 bg-primary-700 text-white rounded-full min-w-[18px] h-[18px] text-xs px-1 flex items-center justify-center'>
                     {wishlistInfo == null
                       ? <FontAwesomeIcon icon={faSpinner} className="animate-spin text-[10px]" />
                       : wishlistInfo.count}
@@ -66,9 +70,9 @@ export default function Navbar({ cartInfo, wishlistInfo }) {
               </li>
               <li className='flex flex-col items-center justify-center relative'>
                 <NavLink to="Cart" className={({ isActive }) => `flex flex-col items-center justify-center relative ${isActive ? "text-primary-800" : ""}`}>
-                  <i className="fa-solid fa-cart-shopping"></i>
+                  <i className="fa-solid fa-cart-shopping text-2xl"></i>
                   <p>Cart</p>
-                  <span className='absolute top-[-15px] right-1.5 bg-primary-700 text-white rounded-full min-w-[18px] h-[18px] text-xs px-1 flex items-center justify-center'>
+                  <span className='absolute top-[-5px] right-1.5 bg-primary-700 text-white rounded-full min-w-[18px] h-[18px] text-xs px-1 flex items-center justify-center'>
                     {cartInfo == null
                       ? <FontAwesomeIcon icon={faSpinner} className="animate-spin text-[10px]" />
                       : cartInfo.numOfCartItems}
@@ -87,7 +91,7 @@ export default function Navbar({ cartInfo, wishlistInfo }) {
     }}
     className="flex flex-col items-center justify-center text-gray-700 hover:text-primary-600"
   >
-    <i className="fa-solid fa-right-to-bracket"></i>
+    <i className="fa-solid fa-right-to-bracket text-2xl"></i>
     <p>Logout</p>
   </button>
 </li>
